@@ -1,7 +1,8 @@
-import {Controller, Logger, Get, NotFoundException, Param, Post, Body} from "@nestjs/common";
+import {Controller, Logger, Get, NotFoundException, Param, Post, Body, UseGuards} from "@nestjs/common";
 import {HelloBodyDTO} from "./hello-body.dto";
 import {v4 as uuid} from "uuid";
-import { HelloService } from "./hello.service";
+import {HelloService} from "./hello.service";
+import {AuthGuard} from "../auth.guard";
 
 @Controller()
 export class HelloController {
@@ -34,6 +35,12 @@ export class HelloController {
       this.logger.error(error?.massage ?? '');
       throw error;
     }
+  }
+
+  @Get('/restricted-data')
+  @UseGuards(AuthGuard)
+  async getRestrictedData() {
+    return {};
   }
 
   @Post('hello')
