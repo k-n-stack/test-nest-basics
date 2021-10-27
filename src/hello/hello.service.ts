@@ -19,6 +19,7 @@ export class HelloService {
 
   async create(message: string) {
     const id = uuid();
+    console.log(id);
     const element = {id, message};
     this.db.push(element);
     return element;

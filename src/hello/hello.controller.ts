@@ -37,10 +37,10 @@ export class HelloController {
     }
   }
 
-  @Get('/restricted-data')
+  @Get('restricted-data')
   @UseGuards(AuthGuard)
   async getRestrictedData() {
-    return {};
+    return 'restricted data is protected by a guard';
   }
 
   @Post('hello')
