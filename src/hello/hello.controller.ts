@@ -1,8 +1,9 @@
-import {Controller, Logger, Get, NotFoundException, Param, Post, Body, UseGuards} from "@nestjs/common";
+import {Controller, Logger, Get, NotFoundException, Param, Post, Body, UseGuards, Req} from "@nestjs/common";
 import {HelloBodyDTO} from "./hello-body.dto";
 import {v4 as uuid} from "uuid";
 import {HelloService} from "./hello.service";
 import {AuthGuard} from "../auth.guard";
+import { Request } from "express";
 
 @Controller()
 export class HelloController {
@@ -26,7 +27,7 @@ export class HelloController {
   async replyExactHello(@Param('helloId') id: string) {
     try {
       let hello = await this.helloService.findById(id);
-      let message = hello.message;
+      let message = hello.msg;
       if(!message) {
         throw new NotFoundException('desired `hello` not found'); // 404
       }
@@ -44,12 +45,12 @@ export class HelloController {
   }
 
   @Post('hello')
-  saveHello(@Body() body: HelloBodyDTO) {
+  async saveHello(@Body() body: HelloBodyDTO, @Req() req: Request) {
     console.log(body);
     try {
-      const id = uuid();
-      const hello = {id, message: body.message};
-      this.helloService.create(hello.message);
+      // const id = uuid();
+      // const hello = {id, message: body.message};
+      return await this.helloService.create(body.message, req.ip);
     } catch(error) {
       this.logger.error(error?.message ?? '');
       throw error;
